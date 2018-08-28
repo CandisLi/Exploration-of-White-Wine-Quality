@@ -1,0 +1,626 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+Exploration of White Wine Quality Dataset
+========================================================
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
+# Load all of the packages that you end up using
+# in your analysis in this code chunk.
+
+# Notice that the parameter "echo" was set to FALSE for this code chunk.
+# This prevents the code from displaying in the knitted HTML output.
+# You should set echo=FALSE for all code chunks in your file.
+
+library(ggplot2)
+library(dplyr)
+library(GGally)
+library(gridExtra)
+```
+
+```{r echo=FALSE, Load_the_Data}
+wq <- read.csv('wineQualityWhites.csv')
+```
+
+```{r echo=FALSE, warning=FALSE}
+# Observe this white wine quality dataset.
+class(wq)
+names(wq)
+str(wq)
+summary(wq)
+```
+
+#### This dataset consists of 12 variables(X will not be discussed), with 4898 observations.
+
+# Univariate Plots Section
+```{r echo=FALSE, message=FALSE, warning=FALSE, Univariate_Plots}
+# Observe the distribution of quality
+ggplot(aes(x = quality), data = wq) +
+  geom_bar() +
+  ggtitle('The Distribution Of Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+table(wq$quality)
+summary(wq$quality)
+```
+#### The distribution of white wine quality is more frequently in the middle.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of pH
+qplot(x = pH, data = wq)+
+  ggtitle('The Distribution Of pH') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$pH)
+```
+
+#### The distribution of pH is also more frequently in the middle, the mean value of pH is 3.188, the median value of pH is 3.180.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of alcohol
+qplot(x = alcohol, data = wq)+
+  ggtitle('The Distribution Of Alcohol') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$alcohol)
+```
+
+#### More white wine has an alcohol percentage between 9% to 12%, mean 10.51% and median 10.40%.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of density
+qplot(x = density, data = wq, binwidth = 0.0001) +
+  scale_x_continuous(limits = c(0.9871, 1.005))+
+  ggtitle('The Distribution Of Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$density)
+```
+
+#### Density has a long tail, adjust the X axis range, we can find that most of the density is distributed between 0.990 and 1.000.
+
+```{r echo= FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of sulphates
+qplot(x = sulphates, data = wq)+
+  ggtitle('The Distribution Of Sulphates') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$sulphates)
+```
+
+#### The sulphates of most white wine is between 0.3 and 0.7. The mean sulphates is 0.4898 and the median is 0.4700.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of total sulfur dioxide
+qplot(x = total.sulfur.dioxide, data = wq)+
+  ggtitle('The Distribution Of Total Sulfur Dioxide') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$total.sulfur.dioxide)
+```
+
+#### Total sulfur dioxide has a long tail, most is distributed between 50 and 250, the mean total sulfur dioxide is 138.4 and the median is 134.0.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of free sulfur dioxide
+qplot(x = free.sulfur.dioxide, data = wq, binwidth = 1) +
+  scale_x_continuous(limits = c(0,100))+
+  ggtitle('The Distribution Of Free Sulfur Dioxide') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$free.sulfur.dioxide)
+```
+
+#### Free sulfur dioxide has a long tail, adjust the X axis range, we can find that most is distributed between 0 and 75, the mean free sulfur dioxide is 35.31 and the median is 34.00. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of residual sugar
+qplot(x = residual.sugar, data = wq, binwidth = 0.1) +
+  scale_x_continuous(limits = c(0,25))+
+  ggtitle('The Distribution Of Residual Sugar') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$residual.sugar)
+```
+
+#### Residual sugar has a long tail, most is distributed between 0 and 20. Transformed the long tail data, the transformed peaking residual sugar peaking around 2. The mean is 6.391 and the median is 5.200.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of chlorides
+qplot(x = chlorides, data = wq, binwidth = 0.001) +
+  scale_x_continuous(limits = c(0,0.1))+
+  ggtitle('The Distribution Of Chlorides') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$chlorides)
+```
+
+#### Chlorides has a long tail. Adjust the X range and binwidth, most is distributed between 0.025 and 0.075. The mean is 0.04577 and the median is 0.043.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of critric acid
+qplot(x = citric.acid, data = wq)+
+  ggtitle('The Distribution Of Citric Acid') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$citric.acid)
+```
+
+#### Citric acid has a long tail. The mean is 0.3342 and the median is 0.3200.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Observe the distribution of volatile acidity
+qplot(x = volatile.acidity, data = wq, binwidth = 0.01) +
+  scale_x_continuous(limits = c(0,0.9))+
+  ggtitle('The Distribution Of Volatile Acidity') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$volatile.acidity)
+```
+
+#### Volatile acidity has a long tail. Adjust the X range and binwidth, most is distributed between 0.1 and 0.5. The mean is 0.2782 and the median is 0.26.
+
+```{r echo=FALSE, message=FALSE,  warning=FALSE}
+# Observe the distribution of fixed acidity
+qplot(x = fixed.acidity, data = wq, binwidth = 0.08) +
+  scale_x_continuous(limits = c(2,12))+
+  ggtitle('The Distribution Of Fixed Acidity') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+summary(wq$fixed.acidity)
+```
+
+#### Fixed acidity has a long tail. Adjust the X range and binwidth, most is distributed between 5 and 10. The mean is 6.855 and the median is 6.800.
+
+# Univariate Analysis
+
+### What is the structure of your dataset?
+
+#### There are 4,898 obeservations in the dataset with 12 features(fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates, alcohol and quality. The description of each feature is as follows.)
+
+#### 1. fixed acidity: most acids involved with wine or fixed or nonvolatile (do not evaporate readily)
+
+#### 2.  volatile acidity: the amount of acetic acid in wine, which at too high of levels can lead to an unpleasant, vinegar taste
+
+#### 3.  citric acid: found in small quantities, citric acid can add 'freshness' and flavor to wines
+
+#### 4.  residual sugar: the amount of sugar remaining after fermentation stops, it's rare to find wines with less than 1 gram/liter and wines with greater than 45 grams/liter are considered sweet
+
+#### 5.  chlorides: the amount of salt in the wine
+
+#### 6.  free sulfur dioxide: the free form of SO2 exists in equilibrium between molecular SO2 (as a dissolved gas) and bisulfite ion; it prevents microbial growth and the oxidation of wine
+
+#### 7. total sulfur dioxide: amount of free and bound forms of S02; in low concentrations, SO2 is mostly undetectable in wine, but at free SO2 concentrations over 50 ppm, SO2 becomes evident in the nose and taste of wine
+
+#### 8. density: the density of water is close to that of water depending on the percent alcohol and sugar content
+
+#### 9. pH: describes how acidic or basic a wine is on a scale from 0 (very acidic) to 14 (very basic); most wines are between 3.4 on the pH scale
+
+#### 10. sulphates: a wine additive which can contribute to sulfur dioxide gas (S02) levels, wich acts as an antimicrobial and antioxidant
+
+#### 11. alcohol: the percent alcohol content of the wine
+
+#### Output variable (based on sensory data): 
+
+#### 12. quality (score between 0 and 10)
+
+
+### What is/are the main feature(s) of interest in your dataset?
+
+#### The main features in the data set are quality, pH, alcohol and density. I'd like to explore which features are best for predicting the quality of white wine. I suspect pH and alcohol can effect the quality, I'll explore in the next section. 
+
+### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
+
+#### Other features like density, fixed acidity, volatile acidity, citric acid, residual sugar, chlorides etc... may also effect quality.
+
+### Did you create any new variables from existing variables in the dataset?
+
+#### No, I don't creat any new variables.
+
+### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
+
+#### No.
+
+
+
+# Bivariate Plots Section
+```{r echo=FALSE, message=FALSE, warning=FALSE, Bivariate_Plots}
+# Variable 'X' is just index in this dataset, delete it before analysis.
+wq <- subset(wq, select = -c(X))
+```
+
+```{r echo=FALSE, fig.height=15, fig.width=20, message=FALSE, warning=FALSE}
+set.seed(21)
+wq_samp <- wq[sample(1:length(wq$quality), 1000), ]
+ggpairs(wq_samp) +
+  ggtitle('Relationship Of Each Two Variables Matrix') +
+  theme(plot.title = element_text(size= 36, hjust = 0.5))
+```
+
+```{r echo=FALSE, fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+ggcorr(wq,
+       method = c('all.obs', 'spearman'),
+       nbreaks = 4, palette = 'PuOr', label = TRUE,
+       name = 'spearman correlation coeff.(rho)',
+       hjust = 0.8, size = 3) +
+  ggtitle('Spearman Correlation Coefficient Matrix') +
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+```
+
+#### Use and ggparis() and ggcorr(), we can find that fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, total sulfur dioxide and density have negative influence on quality, while free.sulfur.dioxide, pH, sulphates and alcohol have positive influence on quality. It seems that density and alcohol have moderate correlations with quality, there isn't any variable has strong correlation with quality. Density has strong correlation with residual sugar and alcohol, while moderately correlated with free sulfur dioxide and total sulfur dioxide. Alcohol has strong correlation with density, while moderately correlated with residual sugar, chlorides and total sulfur dioxide. Next, I will explore these variables, alcohol, denssity, residual sugar, chlorides, free sulfur dioxide and total sulfur dioxide.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS alcohol
+ggplot(aes(x = quality, y = alcohol), data = wq) +
+  geom_jitter(alpha = 0.2)+
+  ggtitle('Quality VS Alcohol') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+ggplot(aes(x = factor(quality), y = alcohol), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Quality VS Alcohol') +
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$quality, wq$alcohol)
+
+```
+
+#### With the increase of alcohol, quality increases.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS density, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = quality, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  ylim(quantile(wq$density, 0.01), quantile(wq$density, 0.99))+
+  ggtitle('Quality VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+ggplot(aes(x = factor(quality), y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  ylim(quantile(wq$density, 0.01), quantile(wq$density, 0.99)) +
+  geom_boxplot(alpha = 0.2, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Quality VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$quality, wq$density)
+```
+
+#### At a certain level, with the density decreasing, quality increases. 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alcohol VS density, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = alcohol, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  ylim(quantile(wq$density, 0.01), quantile(wq$density, 0.99)) +
+  ggtitle('Alcohol VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+ggplot(aes(x = alcohol, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  ylim(quantile(wq$density, 0.01), quantile(wq$density, 0.99)) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Alcohol VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$alcohol, wq$density)
+```
+
+#### Density has a strong negative correlation with alcohol.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Density VS residual sugar, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = residual.sugar, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  xlim(0, quantile(wq$residual.sugar, 0.99)) +
+  ylim(quantile(wq$density, 0), quantile(wq$density, 0.99)) +
+  ggtitle('Residual Sugar VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+ggplot(aes(x = residual.sugar, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  xlim(0, quantile(wq$residual.sugar, 0.99)) +
+  ylim(quantile(wq$density, 0), quantile(wq$density, 0.99)) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Residual Sugar VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$residual.sugar, wq$density)
+```
+
+#### Density has a strong positive correlation with residual sugar, more residual sugar, higer density.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Density VS free sulfur dioxide, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = free.sulfur.dioxide, y = density), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  xlim(0, quantile(wq$free.sulfur.dioxide, 0.99)) +
+  ylim(quantile(wq$density, 0), quantile(wq$density, 0.99)) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Free Sulfur Dioxide VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$free.sulfur.dioxide, wq$density)
+```
+
+#### Density has a moderate positive correlation with free sulfur dioxide, more free sulfur dioxide, higer density.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Desnsity VS total sulfur dioxide, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = total.sulfur.dioxide, y = density), data = wq) +
+  geom_jitter(alpha = 0.3) +
+  xlim(0, quantile(wq$total.sulfur.dioxide, 0.99)) +
+  ylim(quantile(wq$density, 0), quantile(wq$density, 0.99)) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Total Sulfur Dioxide VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$total.sulfur.dioxide, wq$density)
+```
+
+#### Density has a moderate positive correlation with total sulfur dioxide, more total sulfur dioxide, higer density.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alcohol VS residual sugar, remove top 1% and bottom 1% outliers.
+ggplot(aes(x = residual.sugar, y = alcohol), data = wq) +
+  geom_jitter(alpha = 0.2) +
+  xlim(0, quantile(wq$residual.sugar, 0.99)) +
+  ylim(quantile(wq$alcohol, 0), quantile(wq$alcohol, 0.99)) +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Residual Sugar VS Alcohol') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq$residual.sugar, wq$alcohol)
+```
+
+#### Alcohol has a moderate positive correlation with redisual sugar.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS residual sugar, remove top 1% and bottom 1% outliers.
+q1_r <- quantile(wq$residual.sugar, 0.01)
+q99_r <- quantile(wq$residual.sugar, 0.99)
+wq_r = wq[(q1_r <= wq$residual.sugar) & (wq$residual.sugar <= q99_r), ]
+
+ggplot(aes(x = factor(quality), y = residual.sugar), 
+       data = wq_r) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Residual Sugar VS Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq_r$quality, wq_r$residual.sugar)
+```
+
+#### Remove outliers, it is easy to see that quality doesn't have obvious relationship with residual sugar.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS chlorides, remove top 5% and bottom 5% outliers.
+q5_c <- quantile(wq$chlorides, 0.05)
+q95_c <- quantile(wq$chlorides, 0.95)
+wq_c = wq[(q5_c <= wq$chlorides) & (wq$chlorides <= q95_c), ]
+
+ggplot(aes(x = factor(quality), y = chlorides), data = wq_c) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Chlorides VS Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq_c$quality, wq_c$chlorides)
+```
+
+#### Remove top 5% and bottom 5% outliers, it is easy to see that with chlorides increases, quality decreases.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS free sulfur dioxide, remove top 1% and bottom 1% outliers.
+q1_f <- quantile(wq$free.sulfur.dioxide, 0.01)
+q99_f <- quantile(wq$free.sulfur.dioxide, 0.99)
+wq_f = wq[(q1_f <= wq$free.sulfur.dioxide) & (wq$free.sulfur.dioxide <= q99_f), ]
+
+ggplot(aes(x = factor(quality), y = free.sulfur.dioxide), 
+       data = wq_f) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Free Sulfur Dioxide VS Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq_f$quality, wq_f$free.sulfur.dioxide)
+```
+
+#### Free sulfur dioxide doesn't have obvious influence on quality.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Quality VS total sulfur dioxide, remove top 1% and bottom 1% outliers.
+q1_t <- quantile(wq$total.sulfur.dioxide, 0.01)
+q99_t <- quantile(wq$total.sulfur.dioxide, 0.99)
+wq_t = wq[(q1_t <= wq$total.sulfur.dioxide) & (wq$total.sulfur.dioxide <= q99_t), ]
+
+ggplot(aes(x = factor(quality), y = total.sulfur.dioxide), 
+       data = wq_t) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Total Sulfur Dioxide VS Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+
+cor.test(wq_t$quality, wq_t$total.sulfur.dioxide)
+```
+
+#### Total sulfur dioxide has weak relationship with quality.
+
+
+# Bivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. How did the feature(s) of interest vary with other features in the dataset?
+
+#### Fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, total sulfur dioxide and density have negative influence on quality, while free.sulfur.dioxide, pH, sulphates and alcohol have positive influence on quality. It seems that density and alcohol have moderate correlations with quality, there isn't any variable has strong correlation with quality. 
+
+### Did you observe any interesting relationships between the other features (not the main feature(s) of interest)?
+
+#### Yeah, I obeserved the variables that influence density and alcohol. Density has strong correlation with residual sugar and alcohol, while moderately correlated with free sulfur dioxide and total sulfur dioxide. Alcohol has strong correlation with density, while moderately correlated with residual sugar, chlorides and total sulfur dioxide. 
+
+### What was the strongest relationship you found?
+
+#### Alcohol has the greatest influence on quality, alcohol and density have the strongest relationship.
+
+# Multivariate Plots Section
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, Multivariate_Plots}
+# Alcohol VS density VS quality, adjust Y axis.
+ggplot(aes(x = alcohol, y = density, 
+           color = factor(quality)), data = wq) +
+  scale_y_continuous(limits = c(0.985, 1.005)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE, size=1.5) +
+  scale_color_brewer(palette = "Blues") +
+  ggtitle("Alcohol VS Density VS Quality")+ 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab("density (g/mL)")+
+  xlab("alcohol (mg/L)")
+```
+
+#### With the same density, more alcohol, higher quality. If density is influenced by alcohol more, quality will be higher.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Chlorides VS density VS quality, adjust X and Y axis.
+ggplot(aes(x = chlorides, y = density, 
+           color = factor(quality)), data = wq) +
+  scale_x_continuous(limits = c(0, 0.2)) +
+  scale_y_continuous(limits = c(0.985, 1.005)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE, size=2) +
+  scale_color_brewer(palette = "Blues") +
+  ggtitle("Chlorides VS Density VS Quality") +
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab("density (g/mL)")+
+  xlab("chlorides(g/mL)")
+```
+
+
+#### A lower chlorides and a higher density will have a higher quality.
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+# Alcohol VS chlorides VS quality, adjust Y axis.
+ggplot(aes(x = alcohol, y = chlorides, 
+           color = factor(quality)), data = wq) +
+  scale_y_continuous(limits = c(0, 0.1)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE, size=1.5) +
+  scale_color_brewer(palette = "Blues") +
+  ggtitle("Alcohol VS Chlorides VS Quality") + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab("chlorides(g/mL)")+
+  xlab("alcohol (mg/L)")
+```
+
+#### A higher alcohol and a lower chlorides will have a higher quality.
+
+# Multivariate Analysis
+
+### Talk about some of the relationships you observed in this part of the investigation. Were there features that strengthened each other in terms of looking at your feature(s) of interest?
+
+#### With the same density, more alcohol, higher quality. If density is influenced by alcohol more, quality will be higher. A lower chlorides and a higher density will have a higher quality. 
+
+### Were there any interesting or surprising interactions between features?
+
+#### pH and residual sugar have weak relationship with quality.
+
+### OPTIONAL: Did you create any models with your dataset? Discuss the strengths and limitations of your model.
+
+#### No.
+
+------
+
+# Final Plots and Summary
+
+### Plot One
+```{r echo=FALSE, message=FALSE, warning=FALSE, Plot_One}
+# Observe the distribution of quality
+ggplot(aes(x = quality), data = wq) +
+  geom_bar() +
+  ggtitle('The Distribution Of Quality') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5))
+table(wq$quality)
+summary(wq$quality)
+```
+
+### Description One
+
+#### The distribution of quality is concentrated in the middle value, median value is 6, mean value is 5.878. Most wine's quality is 6.
+
+### Plot Two
+```{r echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, Plot_Two}
+p1 <- ggplot(aes(x = factor(quality), y = alcohol), 
+             data = wq) +
+  geom_jitter(alpha = 0.2) +
+  geom_boxplot(alpha = 0.5, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Quality VS Alcohol') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab('alcohol(mg/L)')
+
+p2 <-ggplot(aes(x = factor(quality), y = density), 
+            data = wq) +
+  geom_jitter(alpha = 0.2) +
+  ylim(quantile(wq$density, 0.01), quantile(wq$density, 0.99)) +
+  geom_boxplot(alpha = 0.2, color = 'blue') +
+  stat_summary(fun.y = mean, geom = 'point', color = 'red') +
+  geom_smooth(method = 'lm', aes(group = 1)) +
+  ggtitle('Quality VS Density') + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab('density(g/mL)')
+
+grid.arrange(p1, p2, ncol = 1)
+
+```
+
+### Description Two
+
+#### With the increase of alcohol, quality increases. With the increase of density, quality decreases.
+
+### Plot Three
+```{r echo=FALSE, fig.height=8, fig.width=10, message=FALSE, warning=FALSE, Plot_Three}
+p3 <- ggplot(aes(x = alcohol, y = density, 
+                 color = factor(quality)), data = wq) +
+  scale_y_continuous(limits = c(0.985, 1.005)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE, size=1.5) +
+  scale_color_brewer(palette = "Blues") +
+  ggtitle("Alcohol VS Density VS Quality") + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab("density (g/mL)")+
+  xlab("alcohol (mg/L)")
+
+p4 <- ggplot(aes(x = chlorides, y = density, 
+                 color = factor(quality)), data = wq) +
+  scale_x_continuous(limits = c(0, 0.2)) +
+  scale_y_continuous(limits = c(0.985, 1.005)) +
+  geom_jitter() +
+  geom_smooth(method = "lm", se = FALSE, size=2) +
+  scale_color_brewer(palette = "Blues") +
+  ggtitle("Chlorides VS Density VS Quality") + 
+  theme(plot.title = element_text(size = 18, hjust = 0.5)) +
+  ylab("density (g/mL)")+
+  xlab("chlorides(g/mL)")
+
+grid.arrange(p3, p4, ncol = 1)
+```
+
+### Description Three
+
+#### With a low chlorides, if density is influenced by alcohol more, quality will be higher.
+
+# Reflection
+#### There are 4,898 obeservations in this white wine quality dataset with 12 features. I need to find these variables which influence wine quality more.
+#### Firstly, I observed distributions of each variable. Secondly, I used ggpairs and ggcorr to explore the relationship between variables. There isn't any variable have strong relationship with quality, it made me a little disappointed. Fortunately, density and alcohol have moderate relationship with quality, and they have strong relationship with some other variables.
+#### Then, I decided to explore the variables that may affect quality, for example, those variables have strong correlation with density and alcohol. 
+#### Finally, through these bivariate and multivariate analysis, I found some conclusions.
+#### However£¬these are only parts of the secrets that is hidden in this dataset.
+#### I should practice more and use more complex visualization to explore datasets.
